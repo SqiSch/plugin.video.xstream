@@ -499,6 +499,15 @@ def _cinema(oGui):
             oGui.addFolder(oGuiElement, oParams, bIsFolder = False, iTotal = total)
 
 def parseMovieEntrySite():
+    
+    try:
+        from metahandler import metahandlers
+        meta = metahandlers.MetaData()
+    except Exception as e:
+        META = False
+        logger.info("Could not import package 'metahandler'")
+        logger.info(e)
+
     oParams = ParameterHandler()
     sSecurityValue = oParams.getValue('securityCookie')
     if (oParams.exist('sUrl')):
@@ -512,11 +521,23 @@ def parseMovieEntrySite():
             oGui = cGui()
             aSeriesItems = parseSerieSite(sHtmlContent)
             if (len(aSeriesItems) > 0):
+
                 imdbID = oParams.getValue('imdbID')
                 for item in aSeriesItems:
                     oGuiElement = cGuiElement(item['title'], SITE_IDENTIFIER, 'showHosters')
                     sShowTitle = sMovieTitle.split('(')[0].split('*')[0]
                     oGuiElement.setMediaType('episode')
+
+                    oGuiElement.setSeason(item['season'])
+                    oGuiElement.setEpisode(item['episode'])
+                    oGuiElement.setTVShowTitle(sShowTitle)
+
+
+
+                    episodeMeta = meta.get_episode_meta(sShowTitle, imdbID, item['season'], item['episode'])
+                    asciiTitle = episodeMeta["title"].encode("ascii","ignore")
+                    episodeTitle = "" + item['season'] + "x" + item['episode'] + " - " + asciiTitle
+                    oGuiElement.setTitle(episodeTitle)
 
                     oParams.addParams({'sUrl':item['url'], 'episode':item['episode'], 'season':item['season'], 'TvShowTitle':sShowTitle})
                     oGui.addFolder(oGuiElement, oParams, bIsFolder = False, iTotal = len(aSeriesItems))
@@ -581,7 +602,6 @@ def parseSerieSite(sHtmlContent):
           iSeasonNum = aEntry[1]
           sTitel = 'Staffel '+ str(iSeasonNum) + ' - ' + str(iEpisodeNum)
           sUrl = URL_EPISODE_URL + sSeriesUrl + '&Season=' + str(iSeasonNum) + '&Episode=' + str(iEpisodeNum)
-
           aSeries['title'] = sTitel
           aSeries['url'] = sUrl
           aSeries['season'] = iSeasonNum
