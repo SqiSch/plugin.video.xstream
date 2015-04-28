@@ -527,6 +527,8 @@ def parseMovieEntrySite():
                     oGuiElement = cGuiElement(item['title'], SITE_IDENTIFIER, 'showHosters')
                     sShowTitle = sMovieTitle.split('(')[0].split('*')[0]
                     oGuiElement.setMediaType('episode')
+                    oGuiElement.setSeason(item['season'])
+                    oGuiElement.setEpisode(item['episode'])
 
                     oGuiElement.setSeason(item['season'])
                     oGuiElement.setEpisode(item['episode'])
@@ -842,7 +844,7 @@ def getHosterUrlandPlay(sUrl = False):
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequest.request()
         #pattern for stream url (single part)
-        sPattern = '<a\shref=\\\\"(.*?)\\\\"'
+        sPattern = '<a\shref=\\\\".*?(http:.*?)\\\\"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
@@ -856,7 +858,7 @@ def getHosterUrlandPlay(sUrl = False):
             ii +=1
   else:
     #pattern for stream url (single part)
-    sPattern = '<a\shref=\\\\"(.*?)\\\\"'
+    sPattern = '<a\shref=\\\\".*?(http:.*?)\\\\"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
