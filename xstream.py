@@ -70,7 +70,7 @@ def updateMeta(params):
                     logger.info('error or nothing found')
                     foundInfo = False
             elif mediaType == 'tvshow':
-                foundInfo = metahandlers.TheTVDB().get_matching_shows(sSearchText, language="all")
+                foundInfo = metahandlers.TheTVDB().get_matching_shows(sSearchText, language="de")
             else:
                 return
         else:

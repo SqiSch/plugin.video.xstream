@@ -499,7 +499,7 @@ def _cinema(oGui):
             oGui.addFolder(oGuiElement, oParams, bIsFolder = False, iTotal = total)
 
 def parseMovieEntrySite():
-    
+    META = True
     try:
         from metahandler import metahandlers
         meta = metahandlers.MetaData()
@@ -533,9 +533,10 @@ def parseMovieEntrySite():
                     oGuiElement.setTVShowTitle(sShowTitle)
 
 
-
-                    episodeMeta = meta.get_episode_meta(sShowTitle, imdbID, item['season'], item['episode'])
-                    asciiTitle = episodeMeta["title"].encode("ascii","ignore")
+                    asciiTitle=""
+                    if META != False:
+                        episodeMeta = meta.get_episode_meta(sShowTitle, imdbID, item['season'], item['episode'])
+                        asciiTitle = episodeMeta["title"].encode("ascii","ignore")
                     episodeTitle = "" + item['season'] + "x" + item['episode'] + " - " + asciiTitle
                     oGuiElement.setTitle(episodeTitle)
 
